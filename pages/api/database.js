@@ -1,6 +1,8 @@
 import Cors from "cors";
 import initMiddleware from "../../lib/init-middleware";
 import { getDataBase } from "../../src/services/getDataBase";
+import { compareKey } from "../../lib/compareKey";
+import { MISSING_KEY, WRONG_KEY } from "../../utils/errorMessages";
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -22,10 +24,17 @@ const actions = (method) => {
 };
 
 export default async function handler(req, res) {
-  // Run cors
-  await cors(req, res);
-  const result = await actions(req.method);
-
-  console.log(result);
-  res.send(result);
+  try {
+    // Run cors
+    await cors(req, res);
+    const { apiKey } = req.query;
+    if (!apiKey) await Promise.reject(MISSING_KEY);
+    if (!compareKey(apiKey)) await Promise.reject(WRONG_KEY);
+    const result = await actions(req.method);
+    res.json(result);
+  } catch (error) {
+    res.send({
+      error,
+    });
+  }
 }

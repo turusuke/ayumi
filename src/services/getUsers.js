@@ -1,4 +1,5 @@
 import { Client } from "@notionhq/client";
+import { getDataBase } from "./getDataBase";
 const notion = new Client({ auth: process.env.NOTION_KEY });
 const databaseId = process.env.NOTION_DATABASE_ID;
 
@@ -8,14 +9,10 @@ export async function getUsers() {
       return Promise.reject();
     }
 
-    const { results } = await notion.users.list({
-      page_size: 100,
-    });
+    const dataBase = await getDataBase();
 
-    return results
-    .filter(({ type }) => type !== "bot")
-    .map(({ id, name }) => ({ id, name }));
+    return dataBase.properties.Member.select.options;
   } catch (error) {
-    console.error(error);
+    return error;
   }
 }

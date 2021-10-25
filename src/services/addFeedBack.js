@@ -3,7 +3,7 @@ import { Client } from "@notionhq/client";
 const notion = new Client({ auth: process.env.NOTION_KEY });
 const databaseId = process.env.NOTION_DATABASE_ID;
 
-async function addFeedback() {
+export async function addFeedback({ summary, title, member, reaction, url }) {
   try {
     await notion.request({
       path: "pages",
@@ -15,16 +15,44 @@ async function addFeedback() {
             title: [
               {
                 text: {
-                  content: text,
+                  content: summary,
                 },
               },
             ],
           },
+          Member: {
+            select: {
+              name: member,
+            },
+          },
+          URL: {
+            url: url,
+          },
+          Reaction: {
+            select: {
+              name: reaction,
+            },
+          },
         },
+        children: [
+          {
+            object: "block",
+            type: "paragraph",
+            paragraph: {
+              text: [
+                {
+                  type: "text",
+                  text: {
+                    content: "",
+                  },
+                },
+              ],
+            },
+          },
+        ],
       },
     });
-    console.log("Success! Entry added.");
   } catch (error) {
-    console.error(error);
+    return error;
   }
 }

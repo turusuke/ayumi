@@ -12,6 +12,6 @@ export async function getDataBase() {
       database_id: databaseId,
     });
   } catch (error) {
-    console.error(error);
+    return error;
   }
 }
