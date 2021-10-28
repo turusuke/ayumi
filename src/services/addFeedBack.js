@@ -3,7 +3,7 @@ import { Client } from "@notionhq/client";
 const notion = new Client({ auth: process.env.NOTION_KEY });
 const databaseId = process.env.NOTION_DATABASE_ID;
 
-export async function addFeedback({ summary, title, member, reaction, url }) {
+export async function addFeedback({ summary, member, reaction, url, content }) {
   try {
     await notion.request({
       path: "pages",
@@ -43,7 +43,7 @@ export async function addFeedback({ summary, title, member, reaction, url }) {
                 {
                   type: "text",
                   text: {
-                    content: "",
+                    content: content,
                   },
                 },
               ],
