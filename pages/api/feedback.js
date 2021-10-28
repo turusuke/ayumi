@@ -32,7 +32,9 @@ export default async function handler(req, res) {
     });
 
     // Rest of the API logic
-    res.json(result);
+    res.json({
+      result
+    });
     // res.json(dataBase);
   } catch (error) {
     res.send({
